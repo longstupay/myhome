@@ -1,8 +1,6 @@
 import { CommonEvent,  ScrollView, View ,Swiper, SwiperItem, Text, Image} from "@tarojs/components";
 import React from "react";
 import { AtSearchBar, AtNoticebar,AtIcon } from "taro-ui";
-
-
 import "./index.scss"
 import "taro-ui/dist/style/components/button.scss" //按需引入
 import "taro-ui/dist/style/components/search-bar.scss";
@@ -11,7 +9,6 @@ import "taro-ui/dist/style/components/noticebar.scss";
 import "taro-ui/dist/style/components/flex.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import "taro-ui/dist/style/components/tabs.scss";
-
 //组件
 import {MyTabs} from '../../component/Tabs'
 import {FloatList} from '../../component/FloatListLayout'
