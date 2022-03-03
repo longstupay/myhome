@@ -1,6 +1,6 @@
-import { CommonEvent,  ScrollView, View ,Swiper, SwiperItem, Text} from "@tarojs/components";
-import React, { ComponentClass } from "react";
-import { AtButton,AtSearchBar, AtNoticebar,AtIcon, AtFloatLayout  } from "taro-ui";
+import { CommonEvent,  ScrollView, View ,Swiper, SwiperItem, Text, Image} from "@tarojs/components";
+import React from "react";
+import { AtSearchBar, AtNoticebar,AtIcon } from "taro-ui";
 
 
 import "./index.scss"
@@ -10,12 +10,22 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/noticebar.scss";
 import "taro-ui/dist/style/components/flex.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
-import { AtFloatLayoutProps } from "taro-ui/types/float-layout";
+import "taro-ui/dist/style/components/tabs.scss";
+
+//组件
+import {MyTabs} from '../../component/Tabs'
+import {FloatList} from '../../component/FloatListLayout'
 
 interface Hstate {
     homeScrollHeight:string
     searchVal:string
+    tabList:tablist[]
     isOpen:boolean
+}
+
+interface tablist {
+    id:number;
+    title:string;
 }
 
 export default class Home extends React.Component<any, Hstate>{
@@ -25,7 +35,8 @@ export default class Home extends React.Component<any, Hstate>{
         this.state = {
             homeScrollHeight:'1720',
             searchVal:'',
-            isOpen:true
+            tabList:[],
+            isOpen:false
         }
     }
 
@@ -47,12 +58,7 @@ export default class Home extends React.Component<any, Hstate>{
         console.log(val)
     }
 
-    handleClose = ()=>{
-
-    }
-
     showLayout = ()=>{
-        console.log(this.layout1.props)
         this.setState(
             {
                 isOpen:true
@@ -60,8 +66,8 @@ export default class Home extends React.Component<any, Hstate>{
         )
     }
 
-    topLayou = (node:any)=>{
-        // this.showLayout
+    componentDidMount(): void {
+    
     }
 
     render(): React.ReactNode {
@@ -70,22 +76,11 @@ export default class Home extends React.Component<any, Hstate>{
           }
           const scrollTop = 0
           const Threshold = 20
-          const vStyleA = {
-            height: '150px',
-            'background-color': 'rgb(26, 173, 25)'
-          }
-          const vStyleB = {
-             height: '150px',
-            'background-color': 'rgb(39,130,215)'
-          }
-          const vStyleC = {
-            height: '150px',
-            'background-color': 'rgb(241,241,241)',
-            color: '#333'
-          }
+    
+
         return (
             <>
-                <ScrollView
+                <ScrollView   
                     className='scrollview'
                     scrollY
                     scrollWithAnimation
@@ -111,13 +106,25 @@ export default class Home extends React.Component<any, Hstate>{
                         indicatorDots
                         autoplay>
                         <SwiperItem>
-                            <View className='demo-text-1'>1</View>
+                            <Image
+                                mode="aspectFit"
+                                style='background: #fff;width:100%;'
+                                src='https://web-1306059885.cos.ap-guangzhou.myqcloud.com/images/10002.jpg'
+                            />
                         </SwiperItem>
                         <SwiperItem>
-                            <View className='demo-text-2'>2</View>
+                            <Image
+                                mode="aspectFit"
+                                style='background: #fff;width:100%;'
+                                src='https://web-1306059885.cos.ap-guangzhou.myqcloud.com/images/10003.jpg'
+                            />
                         </SwiperItem>
                         <SwiperItem>
-                            <View className='demo-text-3'>3</View>
+                            <Image
+                                mode="aspectFit"
+                                style='background: #fff;width:100%;'
+                                src='https://web-1306059885.cos.ap-guangzhou.myqcloud.com/images/10001.jpg'
+                            />
                         </SwiperItem>
                     </Swiper>
 
@@ -127,14 +134,10 @@ export default class Home extends React.Component<any, Hstate>{
                         <View className="at-col at-col-2 cl12"><AtIcon onClick={this.showLayout} value='bullet-list' size='30' color='#ccc'></AtIcon></View>
                     </View>
 
-                    <AtFloatLayout ref={(node:any)=>{this.layout1=node}} isOpened={this.state.isOpen} title="这是个标题" onClose={this.handleClose}>
-                        这是内容区 随你怎么写这是内容区 随你怎么写这是内容区 随你怎么写这是内容区
-                        随你怎么写这是内容区 随你怎么写这是内容区 随你怎么写
-                    </AtFloatLayout>
-                    <View style={vStyleA}>A</View>
-                    <View style={vStyleB}>B</View>
-                    <View style={vStyleC}>C</View>
-                    <AtButton type="primary">提交</AtButton>
+                    <MyTabs />
+                    
+                    <FloatList defaultProps={this.state.isOpen} />
+                  
                 </ScrollView>
 
                 

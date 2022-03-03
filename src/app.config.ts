@@ -12,10 +12,14 @@ export default {
   tabBar: {
     "list": [{
       "pagePath": "pages/home/index",
-      "text": "接种点"
+      "text": "接种点",
+      "iconPath":"./static/icon/tab1.png",
+      "selectedIconPath":"./static/icon/tab1s.png"
     }, {
       "pagePath": "pages/index/index",
-      "text": "我的"
+      "text": "我的",
+      "iconPath":"./static/icon/icon_home.png",
+      "selectedIconPath":"./static/icon/icon_homes.png"
     }]
   },
 }
