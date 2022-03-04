@@ -1,0 +1,14 @@
+.f-box {
+    // background-color: aquamarine;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    .t-left{
+        margin-left: 5px;
+    }
+
+    .b-right {
+        margin-right: 15px;
+    }
+}

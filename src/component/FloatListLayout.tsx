@@ -2,11 +2,8 @@ import React from 'react'
 import { AtFloatLayout, AtGrid } from "taro-ui"
 import { AtButton } from 'taro-ui'
 
-import "taro-ui/dist/style/components/float-layout.scss";
-import "taro-ui/dist/style/components/button.scss";
-import "taro-ui/dist/style/components/loading.scss";
 import "./component.scss"
-import "taro-ui/dist/style/components/grid.scss";
+
 
 
 interface ILayoutProps {

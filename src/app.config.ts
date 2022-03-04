@@ -4,6 +4,26 @@ export default {
     'pages/index/index',
     'pages/user/index'
   ],
+  "subpackages": [
+    {
+      "root": "subpack",
+      "pages": [
+        "yuyue/index"
+      ]
+    },
+    {
+      "root": "subpackB",
+      "pages": [
+        "date/index"
+      ]
+    },
+    {
+      "root": "subpackC",
+      "pages": [
+        "time/index"
+      ]
+    },
+  ],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
@@ -23,4 +43,5 @@ export default {
       "selectedIconPath":"./static/icon/icon_homes.png"
     }]
   },
+
 }

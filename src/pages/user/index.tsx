@@ -3,12 +3,6 @@ import { Text, Picker, View } from '@tarojs/components'
 import { AtNavBar, AtForm, AtInput, AtButton, AtList, AtListItem } from 'taro-ui'
 import Taro from '@tarojs/taro'
 
-import "taro-ui/dist/style/components/form.scss";
-import "taro-ui/dist/style/components/input.scss";
-import "taro-ui/dist/style/components/nav-bar.scss";
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/list.scss";
-
 import "./index.scss"
 interface userState {
     inputvalue: string

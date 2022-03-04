@@ -1,0 +1,21 @@
+.text {
+    width: 200px;
+    font-size: 32px;
+    color: #FFC82c;
+    font-weight: bold;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.btn {
+    margin-right: 28px;
+    width: 70px;
+}
+
+.myflex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}

@@ -2,7 +2,6 @@ import React from 'react'
 import { View } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 
-import "taro-ui/dist/style/components/tabs.scss";
 
 //custom com
 import {MyList} from "./List"
@@ -46,26 +45,32 @@ class MyTabs extends React.Component<any,Istate> {
                         <MyList  defualtProps={
                             [
                                 {
+                                    id:1,
                                     name:'南宁市西乡塘卫生院',
                                     phone:'0771-23264'
                                 },
                                 {
+                                    id:2,
                                     name:'南宁市青秀区七星社区卫生服务中心',
                                     phone:'0771-2842899'
                                 },
                                 {
+                                    id:3,
                                     name:'南宁市青秀区南湖社区卫生服务中心',
                                     phone:'0771-5501022'
                                 },
                                 {
+                                    id:4,
                                     name:'南宁市西乡塘卫生院',
                                     phone:'0771-23264'
                                 },
                                 {
+                                    id:5,
                                     name:'南宁市青秀区七星社区卫生服务中心',
                                     phone:'0771-2842899'
                                 },
                                 {
+                                    id:6,
                                     name:'南宁市青秀区南湖社区卫生服务中心',
                                     phone:'0771-5501022'
                                 }
@@ -79,14 +84,17 @@ class MyTabs extends React.Component<any,Istate> {
                         <MyList  defualtProps={
                                 [
                                     {
+                                        id:1,
                                         name:'南宁市西乡塘卫生院',
                                         phone:'0771-23264'
                                     },
                                     {
+                                        id:2,
                                         name:'南宁市青秀区七星社区卫生服务中心',
                                         phone:'0771-2842899'
                                     },
                                     {
+                                        id:3,
                                         name:'南宁市青秀区南湖社区卫生服务中心',
                                         phone:'0771-5501022'
                                     }
