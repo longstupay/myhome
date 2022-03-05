@@ -1,7 +1,9 @@
-import { View,Text,Picker } from "@tarojs/components";
+import { View,Text,PickerView, PickerViewColumn } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React from "react";
 import { AtButton, AtCalendar, AtCard ,AtSteps, AtFloatLayout,  AtList, AtListItem } from "taro-ui"
+
+import "./index.scss"
 
 interface Istate {
     id:string;
@@ -10,20 +12,21 @@ interface Istate {
     current:number;
     canNext:boolean;
     isShow:boolean;
-    timeSel:string
-}
-type DateArg = string | number | Date
+    pickViewVal:number[];
+    hours:string[];
+    min:string[];
 
-interface mySelectDate {
-    end?: DateArg
-    start: DateArg
 }
+
 
 export default class SelectDate extends React.Component<any,Istate> {
 
     constructor(props:any){
         super(props)
          
+        const hours = ['08','09','10','11','15','16','17','18']
+        const min = ['00','30']
+
         this.state = {
             id:'',
             date:"",
@@ -31,8 +34,9 @@ export default class SelectDate extends React.Component<any,Istate> {
             current:0,
             canNext:false,
             isShow:false,
-            timeSel: '12:01',
-
+            hours,
+            min,
+            pickViewVal:[1,1]
         }
     }
 
@@ -80,7 +84,10 @@ export default class SelectDate extends React.Component<any,Istate> {
        
     }
 
-    onTimeChange =()=>{}
+    onPickChange=(v)=>{
+        console.log(v)
+    }
+   
   
 
     render(): React.ReactNode {
@@ -120,16 +127,22 @@ export default class SelectDate extends React.Component<any,Istate> {
                 }
                 
                 <AtFloatLayout isOpened={this.state.isShow}  onClose={this.handleClose.bind(this)}>
-                <View className='page-section'>
-                    <Text>时间选择器</Text>
-                    <View>
-                    <Picker value="t1" mode='time' onChange={this.onTimeChange}>
-                        <AtList>
-                        <AtListItem title='请选择时间' extraText={this.state.timeSel} />
-                        </AtList>
-                    </Picker>
-                    </View>
-                </View>
+                    <PickerView indicatorStyle='height: 50px;' 
+                        style='width: 100%; height: 300px;'
+                        value={this.state.pickViewVal}
+                        onChange={(v)=>this.onPickChange(v)}>
+                        <PickerViewColumn className="text-center">
+                            {this.state.hours.map(items => (
+                                <View>{items}时</View>
+                            ))}
+                        </PickerViewColumn>
+                       
+                        <PickerViewColumn className="text-center">
+                            {this.state.min.map(item=>(
+                                <View>{item}分</View>
+                            ))}
+                        </PickerViewColumn>
+                    </PickerView>
                 </AtFloatLayout>
                 </View>
             </View>
