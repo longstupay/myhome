@@ -1,14 +1,16 @@
-import { View,Text } from "@tarojs/components";
+import { View,Text,Picker } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React from "react";
-import { AtButton, AtCalendar, AtCard ,AtSteps} from "taro-ui"
+import { AtButton, AtCalendar, AtCard ,AtSteps, AtFloatLayout,  AtList, AtListItem } from "taro-ui"
 
 interface Istate {
     id:string;
     date:string;
     total:number;
     current:number;
-    canNext:boolean
+    canNext:boolean;
+    isShow:boolean;
+    timeSel:string
 }
 type DateArg = string | number | Date
 
@@ -27,7 +29,10 @@ export default class SelectDate extends React.Component<any,Istate> {
             date:"",
             total:0,
             current:0,
-            canNext:false
+            canNext:false,
+            isShow:false,
+            timeSel: '12:01',
+
         }
     }
 
@@ -58,11 +63,25 @@ export default class SelectDate extends React.Component<any,Istate> {
     }
 
     nav2Time =()=>{
-        const {id,current} = this.state
-        Taro.navigateTo({
-            url:`/subpackC/time/index?id=${id}&current=${current}`
-        })
+        const {id,current} = this.state;
+        if(current==0){
+            this.setState({
+                isShow:true,
+                current:current+1
+            })
+        }
+        
+        // Taro.navigateTo({
+        //     url:`/subpackC/time/index?id=${id}&current=${current}`
+        // })
     }
+
+    handleClose(){
+       
+    }
+
+    onTimeChange =()=>{}
+  
 
     render(): React.ReactNode {
         const items = [
@@ -100,6 +119,18 @@ export default class SelectDate extends React.Component<any,Istate> {
                 <AtButton customStyle={"margin-top:25px;width:78%;"} disabled type='secondary'>下一步</AtButton>
                 }
                 
+                <AtFloatLayout isOpened={this.state.isShow}  onClose={this.handleClose.bind(this)}>
+                <View className='page-section'>
+                    <Text>时间选择器</Text>
+                    <View>
+                    <Picker value="t1" mode='time' onChange={this.onTimeChange}>
+                        <AtList>
+                        <AtListItem title='请选择时间' extraText={this.state.timeSel} />
+                        </AtList>
+                    </Picker>
+                    </View>
+                </View>
+                </AtFloatLayout>
                 </View>
             </View>
         )

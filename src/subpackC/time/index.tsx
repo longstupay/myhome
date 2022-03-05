@@ -1,8 +1,7 @@
 import { View ,Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React, { Component } from "react";
-import { AtButton, AtSteps, AtCard } from 'taro-ui'
-import { AtFloatLayout} from 'taro-ui'
+import { AtButton, AtSteps, AtCard,AtFloatLayout} from 'taro-ui'
 import "./index.scss"
 interface Istate {
     id:number;
