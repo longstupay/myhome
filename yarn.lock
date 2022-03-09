@@ -1757,7 +1757,7 @@
     prettier "^1.14.2"
     typescript "^3.2.2"
 
-"@tarojs/webpack-runner@3.4.2":
+"@tarojs/webpack-runner@3.4.2", "@tarojs/webpack-runner@^3.4.2":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@tarojs/webpack-runner/-/webpack-runner-3.4.2.tgz#d2e65f806a4fd43ccbed229d3028acbde038d4d7"
   integrity sha512-ahh/vs5nItualAO4JqcWATyoJSv7+aF5G+YvZVe2FSwXR/B5A77oJA+liJXbogHL7RjtfLdQNxJ/nG3hWkTg+w==

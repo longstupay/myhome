@@ -61,9 +61,9 @@ export default class Home extends React.Component<any, Hstate>{
     }
 
     render(): React.ReactNode {
-        const scrollStyle = {
-            height: this.state.homeScrollHeight+'px'
-          }
+        // const scrollStyle = {
+        //     height: this.state.homeScrollHeight+'px'
+        //   }
           const scrollTop = 0
           const Threshold = 20
     
@@ -75,7 +75,7 @@ export default class Home extends React.Component<any, Hstate>{
                     scrollY
                     scrollWithAnimation
                     scrollTop={scrollTop}
-                    style={scrollStyle}
+                    // style={scrollStyle}
                     lowerThreshold={Threshold}
                     upperThreshold={Threshold}
                     onScrollToUpper={this.onScrollToUpper} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`

@@ -23,6 +23,12 @@ export default {
         "time/index"
       ]
     },
+    {
+      "root": "subpackD",
+      "pages": [
+        "edit/index"
+      ]
+    },
   ],
   window: {
     backgroundTextStyle: 'light',

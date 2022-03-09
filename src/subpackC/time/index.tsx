@@ -1,12 +1,13 @@
-import { View ,Text } from "@tarojs/components";
+import { View ,Text, Button } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React, { Component } from "react";
-import { AtButton, AtSteps, AtCard,AtFloatLayout} from 'taro-ui'
+import { AtButton, AtSteps,AtNoticebar,AtCard ,AtList, AtListItem, AtForm} from 'taro-ui'
 import "./index.scss"
 interface Istate {
     id:number;
     current:number;
-    selectList:TimeList[]
+    selectList:TimeList[];
+    
 }
 
 
@@ -69,20 +70,36 @@ export default class selectTime extends Component<any,Istate> {
         console.log(item)
     }
 
+    infoConfirm= ()=>{
+
+    }
+
+    nav2edit = ()=>{
+        const {id} = this.state
+        Taro.navigateTo({
+            url:`/pages/user/index?${id}&update=true`,
+        })
+    }
+    
+
     render(): React.ReactNode {
         const items:any = [
             { 'title': '步骤一', 'status':'success','desc': '选择接种日期' },
-            { 'title': '步骤二', 'desc': '选择接种场次' },
+            { 'title': '步骤二', 'status':'success','desc': '选择接种场次' },
             { 'title': '步骤三', 'desc': '填写预约信息' }
           ]
 
           const errItems:any = [
             { 'title': '步骤一', 'status':'error','desc': '选择接种日期' },
-            { 'title': '步骤二', 'desc': '选择接种场次' },
+            { 'title': '步骤二', 'status':'error','desc': '选择接种场次' },
             { 'title': '步骤三', 'desc': '填写预约信息' }
           ]
         return (
             <View>
+                <AtNoticebar close icon='volume-plus'>
+                温馨提示：您提交后可以去(我的-预约信息)查看是否预约成功
+                </AtNoticebar>
+
                 {
                 this.state.current?
                 <AtSteps
@@ -100,16 +117,59 @@ export default class selectTime extends Component<any,Istate> {
                 
                 }
 
-                <AtCard
-                    note='小Tips'
-                    extra='额外信息'
-                    title='这是个标题'
-                    thumb='http://www.logoquan.com/upload/list/20180421/logoquan15259400209.PNG'
-                    >
-                    这也是内容区 可以随意定义功能
-                </AtCard>
+                <View className="info-card">
+                    <AtCard className="info-card" title="个人信息">
+                        <AtList>
+                            <View onClick={this.nav2edit} className="no-flex">修改</View>
+                            <View className="info-flex ">
+                                <AtListItem className="info-head" title='姓名' />
+                                <View className="info-text">王昭君</View>
+                            </View>
+                            <View className="info-flex ">
+                                <AtListItem className="info-head" title='生日' />
+                                <Text>1998-12-07</Text>
+                            </View>
+                            <View className="info-flex ">
+                                <AtListItem className="info-head" title='手机号码' />
+                                <Text>15676197507</Text>
+                            </View>
+                            <View className="info-flex ">
+                                <AtListItem className="info-head" title='性别' />
+                                <Text>男</Text>
+                            </View>
+                        
+                        </AtList>
+                    </AtCard>
+                </View>
+                
+                <View className="info-card">
+                    <AtCard
+                        title='预约信息'
+                        >
+                        <AtList>
+                            
+                            <View className="info-flex ">
+                                <AtListItem className="info-head" title='预约地点' />
+                                <View className="info-text">南宁市兴宁虎邱社区卫生服务站</View>
+                            </View>
+                            <View className="info-flex ">
+                                <AtListItem className="info-head" title='预约时间' />
+                                <Text>2022-03-11 16:30</Text>
+                            </View>
+                            <View className="info-flex ">
+                                <AtListItem className="info-head" title='预约项目' />
+                                <Text>二价人乳头瘤病毒疫苗(大肠杆菌)</Text>
+                            </View>
+                        
+                        </AtList>
+                    
+                    </AtCard>
+                </View>
+                
+                <AtButton circle customStyle={"margin-top:16px;width:68%"} type="primary" onClick={this.infoConfirm}>确定预约</AtButton>
+         
 
-                <AtFloatLayout isOpened title="预约场次：" onClose={this.handleClose.bind(this)}>
+                {/* <AtFloatLayout isOpened title="预约场次：" onClose={this.handleClose.bind(this)}>
                     
                     {this.state.selectList.map((items,index)=>(
                         <View key={index} className="at-row myflex">
@@ -117,7 +177,7 @@ export default class selectTime extends Component<any,Istate> {
                             <AtButton  onClick={this.selectTime.bind(this,items)} className="btn" size="small" type="primary">预约</AtButton>
                         </View>
                     ))}
-                </AtFloatLayout>
+                </AtFloatLayout> */}
               
                 
             </View>

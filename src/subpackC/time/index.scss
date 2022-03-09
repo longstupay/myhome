@@ -19,3 +19,37 @@
     align-items: center;
     margin-bottom: 5px;
 }
+
+.info-card {
+    margin-top: 8px;
+}
+
+.info-flex {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        // background-color: aqua;
+        width: 100%;
+        .info-head{
+            width:35%;
+            font-weight: bolder;
+            // background-color: bisque;
+        }
+        .info-text{
+            // background-color: azure;
+            height: 100%;
+         // margin: auto 0;
+            
+    }
+}
+
+.no-flex{
+    float: right;
+    width: 95px;
+    // background-color: aquamarine;
+    text-align: center;
+    color: #00abe6;
+    display:block;
+    margin-right: 25px;
+}

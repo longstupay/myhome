@@ -1,4 +1,4 @@
 export default {
-    navigationBarTitleText: '选择接种场次'
+    navigationBarTitleText: '填写预约信息'
   }
   

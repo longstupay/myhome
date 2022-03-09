@@ -16,7 +16,12 @@ export default class Index extends Component {
 
   componentWillUnmount() { }
 
-  componentDidShow() { }
+  componentDidShow() {
+    Taro.showShareMenu({
+      withShareTicket: true,
+      showShareItems:['wechatFriends', 'wechatMoment']
+    })
+   }
 
   componentDidHide() { }
 

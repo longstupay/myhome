@@ -5,10 +5,14 @@ import { AtTabs, AtTabsPane } from 'taro-ui'
 
 //custom com
 import {MyList} from "./List"
+import { drugType } from '../home.interface';
+import HTTP from '../utils/HTTP';
+import Taro from '@tarojs/taro';
 
 
 interface Istate {
-    current:number
+    current:number;
+    drugtype:drugType[]
 }
 
 class MyTabs extends React.Component<any,Istate> {
@@ -16,7 +20,8 @@ class MyTabs extends React.Component<any,Istate> {
     constructor(props:any) {
         super(props)
         this.state = {
-            current:0
+            current:0,
+            drugtype:[]
         }
     }
 
@@ -26,7 +31,23 @@ class MyTabs extends React.Component<any,Istate> {
         })
     }
 
+    async componentDidMount() {
+        const res = await Taro.request({
+            url:"http://127.0.0.1:7001/hspt/type"
+        })
+
+        // console.log(res.data)
+        this.setState({
+            drugtype:res.data
+        })
+    }
+
     render() {
+        
+        const myTabs = this.state.drugtype.map((item)=>{
+            return {title:item.name}
+        });
+
         return (
             <View>
                 <AtTabs
@@ -34,82 +55,24 @@ class MyTabs extends React.Component<any,Istate> {
                     scroll
                     tabList={[
                         { title: '全部' },
-                        { title: 'HPV疫苗' },
-                        { title: '轮状疫苗' },
-                        { title: '狂犬病疫苗' },
-                        { title: '流感疫苗' },
-                        { title: '乙肝疫苗' }
+                        ...myTabs
                     ]}
                     onClick={(index)=>{this.handleClick(index)}}>
+                    
                     <AtTabsPane current={this.state.current} index={0}>
-                        <MyList  defualtProps={
-                            [
-                                {
-                                    id:1,
-                                    name:'南宁市西乡塘卫生院',
-                                    phone:'0771-23264'
-                                },
-                                {
-                                    id:2,
-                                    name:'南宁市青秀区七星社区卫生服务中心',
-                                    phone:'0771-2842899'
-                                },
-                                {
-                                    id:3,
-                                    name:'南宁市青秀区南湖社区卫生服务中心',
-                                    phone:'0771-5501022'
-                                },
-                                {
-                                    id:4,
-                                    name:'南宁市西乡塘卫生院',
-                                    phone:'0771-23264'
-                                },
-                                {
-                                    id:5,
-                                    name:'南宁市青秀区七星社区卫生服务中心',
-                                    phone:'0771-2842899'
-                                },
-                                {
-                                    id:6,
-                                    name:'南宁市青秀区南湖社区卫生服务中心',
-                                    phone:'0771-5501022'
-                                }
-                            ]
-                        }/>
+                        <MyList/>
                     </AtTabsPane>
-                    <AtTabsPane current={this.state.current} index={1}>
-                        <View style='font-size:18px;text-align:center;height:100px;'>标签页二的内容</View>
-                    </AtTabsPane>
-                    <AtTabsPane current={this.state.current} index={2}>
-                        <MyList  defualtProps={
-                                [
-                                    {
-                                        id:1,
-                                        name:'南宁市西乡塘卫生院',
-                                        phone:'0771-23264'
-                                    },
-                                    {
-                                        id:2,
-                                        name:'南宁市青秀区七星社区卫生服务中心',
-                                        phone:'0771-2842899'
-                                    },
-                                    {
-                                        id:3,
-                                        name:'南宁市青秀区南湖社区卫生服务中心',
-                                        phone:'0771-5501022'
-                                    }
-                                ]
-                            }/>
-                    </AtTabsPane>
-                    <AtTabsPane current={this.state.current} index={3}>
-                        <View style='font-size:18px;text-align:center;height:100px;'>标签页四的内容</View>
-                    </AtTabsPane>
-                    <AtTabsPane current={this.state.current} index={4}>
-                        <View style='font-size:18px;text-align:center;height:100px;'>标签页五的内容</View>
-                    </AtTabsPane>
-                    <AtTabsPane current={this.state.current} index={5}>
-                        <View style='font-size:18px;text-align:center;height:100px;'>标签页六的内容</View>
-                    </AtTabsPane>
+
+                    {
+                        this.state.drugtype.map((item,index)=>(
+                            <AtTabsPane key={item.id} current={this.state.current} index={index+1}>
+                                <MyList/>
+                            </AtTabsPane>
+                        ))
+                    }
+                    
+                    
+                    
                 </AtTabs>
 
             </View>

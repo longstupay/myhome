@@ -32,8 +32,8 @@ export default class User extends React.Component<any, userState> {
     }
 
     handleClick = () => {
-        Taro.navigateTo({
-            url: 'index?id=1'
+        Taro.navigateBack({
+           
         })
     }
 

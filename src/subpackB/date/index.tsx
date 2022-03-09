@@ -1,4 +1,4 @@
-import { View,Text,PickerView, PickerViewColumn } from "@tarojs/components";
+import { View,Text,PickerView, PickerViewColumn, BaseEventOrig, PickerViewProps } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React from "react";
 import { AtButton, AtCalendar, AtCard ,AtSteps, AtFloatLayout,  AtList, AtListItem } from "taro-ui"
@@ -15,6 +15,7 @@ interface Istate {
     pickViewVal:number[];
     hours:string[];
     min:string[];
+    time:string;
 
 }
 
@@ -36,7 +37,8 @@ export default class SelectDate extends React.Component<any,Istate> {
             isShow:false,
             hours,
             min,
-            pickViewVal:[1,1]
+            pickViewVal:[1,1],
+            time:""
         }
     }
 
@@ -60,32 +62,39 @@ export default class SelectDate extends React.Component<any,Istate> {
         })
     }
 
-    onChange (current) {
-        this.setState({
-            current:1
-        })
-    }
+
+
+    onStepChange =()=>{}
 
     nav2Time =()=>{
         const {id,current} = this.state;
         if(current==0){
             this.setState({
                 isShow:true,
-                current:current+1
+                // current:1
+            })
+        }
+        if(current==1){
+            Taro.navigateTo({
+                 url:`/subpackC/time/index?id=${id}&current=${current}`
             })
         }
         
-        // Taro.navigateTo({
-        //     url:`/subpackC/time/index?id=${id}&current=${current}`
-        // })
+        
     }
 
     handleClose(){
        
     }
 
-    onPickChange=(v)=>{
-        console.log(v)
+    onPickChange=(v: BaseEventOrig<PickerViewProps.onChangeEventDetail>)=>{
+        const arr = v.detail.value
+        const time = this.state.hours[arr[0]] +":"+this.state.min[arr[1]]
+        this.setState({
+            pickViewVal:arr,
+            time,
+            current:1
+        })
     }
    
   
@@ -111,7 +120,7 @@ export default class SelectDate extends React.Component<any,Istate> {
                     customStyle={"margin:8px 8px;"}
                     items={items}
                     current={this.state.current}
-                    onChange={this.onChange}
+                    onChange={this.onStepChange}
                 />
 
                 <AtCard
@@ -119,7 +128,9 @@ export default class SelectDate extends React.Component<any,Istate> {
                     title={this.state.total?`当前可预约${this.state.total}`:""}
                     thumb='http://www.logoquan.com/upload/list/20180421/logoquan15259400209.PNG'
                 >
-                    <Text>{this.state.date?this.state.date:'请先选择日期'}</Text>
+                    <Text>{this.state.date?this.state.date:'请先选择日期'}
+                    &nbsp;&nbsp;&nbsp;
+                            {this.state.time?this.state.time:""}</Text>
                 </AtCard>
                 {this.state.canNext?
                 <AtButton onClick={this.nav2Time} customStyle={"margin-top:25px;width:78%;"} type="primary">下一步</AtButton>:
@@ -132,14 +143,14 @@ export default class SelectDate extends React.Component<any,Istate> {
                         value={this.state.pickViewVal}
                         onChange={(v)=>this.onPickChange(v)}>
                         <PickerViewColumn className="text-center">
-                            {this.state.hours.map(items => (
-                                <View>{items}时</View>
+                            {this.state.hours.map((items,index) => (
+                                <View key={index}>{items}时</View>
                             ))}
                         </PickerViewColumn>
                        
                         <PickerViewColumn className="text-center">
-                            {this.state.min.map(item=>(
-                                <View>{item}分</View>
+                            {this.state.min.map((item,index)=>(
+                                <View key={index+'min'}>{item}分</View>
                             ))}
                         </PickerViewColumn>
                     </PickerView>
