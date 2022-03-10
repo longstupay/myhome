@@ -9,23 +9,29 @@ import './index.scss'
 interface ModelHeadState {
     isShow: boolean;
     ModalText: string;
-    hospitalInfo:InfoHospital
+    hospitalInfo:InfoHospital;
+    id:number;
 }
 
 interface InfoHospital {
-    naem:string,
-    phone:string,
-    listOrder:ListOrder[]
-                
+    hspt_id: number;
+    hspt_name: string;
+    hspt_phone: string;
+    hspt_notice: string;
+    hspt_location: string;
+    hspt_desc: string;
+    hspt_total?:ListOrder[];
+
 }
 
 interface ListOrder {
-    drugCtg:string,
-    drugID:number,
-    drugName:string,
-    tags:any[],
-    total:number,
-    price:string
+    drug_id: number;
+    drug_name: string;
+    drug_tag: string[];
+    drug_price: string;
+    drug_type: string;
+    drug_time: number;
+    drug_total: number;
 }
 
 interface drugTag {
@@ -38,75 +44,57 @@ export default class OrderList extends Component<any, ModelHeadState> {
         this.state = {
             isShow: true,
             ModalText: "",
-            hospitalInfo: {
-                naem:"南宁青秀区仙葫社区卫生服务中心",
-                phone:"0770-4186171",
-                listOrder:[
+            id:2,
+            hospitalInfo:{
+                hspt_id:1,
+                hspt_name:'南宁市疾病控制中心',
+                hspt_phone:'1231321',
+                hspt_notice:'公对公刚刚',
+                hspt_location:'位置位置',
+                hspt_desc:'描述描述',
+                hspt_total:[
                     {
-                        drugCtg:"a1",
-                        drugID:1,
-                        drugName:"四价人乳头瘤病毒疫苗",
-                        tags:['国产','9-45','3针次'],
-                        total:0,
-                        price:'1150'
+                        drug_id: 1,
+                        drug_name: '狂犬1',
+                        drug_tag: ['国产', '进口'],
+                        drug_price: '1800',
+                        drug_type: '狂犬',
+                        drug_time: 3,
+                        drug_total:200,
+                    },
+                    {
+                        drug_id: 2,
+                        drug_name: '新冠1',
+                        drug_tag: ['印度'],
+                        drug_price: '10',
+                        drug_type: '新冠',
+                        drug_time: 2,
+                        drug_total:500,
                     }
                 ]
             }
         }
     }
-    //请求服务端数据
-    componentDidMount(): void {
-        this.setState({
-            hospitalInfo:
-                {
-                    naem:"广西南宁青秀区仙葫社区卫生服务中心",
-                    phone:"0770-4186171",
-                    listOrder:[
-                        {
-                            drugCtg:"a1",
-                            drugID:1,
-                            drugName:"四价人乳头瘤病毒疫苗",
-                            tags:['国产联合','9-45','3针次'],
-                            total:0,
-                            price:"1330",
-                        },
-                        {
-                            drugCtg:"a1",
-                            drugID:2,
-                            drugName:"九价人乳头瘤病毒疫苗(二、三针)",
-                            tags:['进口','16-26','3针次','默沙东'],
-                            total:0,
-                            price:"830",
-                        },
-                        {
-                            drugCtg:"a1",
-                            drugID:3,
-                            drugName:"四价人乳头瘤病毒疫苗(只约第一针)",
-                            tags:['进口','默沙东','9-45','3针次'],
-                            total:0,
-                            price:"830",
-                        },
-                        ,
-                        {
-                            drugCtg:"a1",
-                            drugID:2,
-                            drugName:"九价人乳头瘤病毒疫苗(只约第一针)",
-                            tags:['进口','16-26','3针次','默沙东'],
-                            total:0,
-                            price:"1330",
-                        },
-                    ]
 
-                }
-            
+    private $instance = Taro.getCurrentInstance()
+    //根据id查找
+    async componentDidMount() {
+        const {id} = this.$instance.router.params
+    
+        const res = await Taro.request({
+            url:`http://127.0.0.1:7001/hspt/byid/${id}`
+        })
+        console.log(res.data)
+        this.setState({
+            hospitalInfo:res.data
         })
     }
 
-    nav2order = (id)=>{
-        // console.log(id)
+    nav2order = (item: ListOrder,local: string)=>{
+        const {drug_name,drug_id,drug_total} = item;
         return ()=>{
             Taro.navigateTo({
-                url: `/subpackB/date/index?id=${id}`,
+                url: `/subpackB/date/index?name=${drug_name}&id=${drug_id}&total=${drug_total}&local=${local}`,
             })
         }
     }
@@ -120,7 +108,7 @@ export default class OrderList extends Component<any, ModelHeadState> {
         return (
             <View>
                 <AtCard
-                    title={this.state.hospitalInfo.naem}
+                    title={this.state.hospitalInfo.hspt_name}
                 >
                     <AtList>
                         <AtListItem
@@ -129,12 +117,12 @@ export default class OrderList extends Component<any, ModelHeadState> {
                             iconInfo={{ size: 25, color: '#78A4FA', value: 'home', }}
                         />
                         <AtListItem
-                            title='南宁市青秀区长福路6号'
+                            title={this.state.hospitalInfo.hspt_location}
                             arrow='right'
                             iconInfo={{ size: 25, color: '#78A4FA', value: 'map-pin', }}
                         />
                         <AtListItem
-                            title='0771-4186171'
+                            title={this.state.hospitalInfo.hspt_phone}
                             arrow='right'
                             iconInfo={{ size: 25, color: '#78A4FA', value: 'phone', }}
                         />
@@ -144,32 +132,22 @@ export default class OrderList extends Component<any, ModelHeadState> {
                     <AtIcon value='chevron-up'></AtIcon>
                 </AtDivider>
 
-                {this.state.hospitalInfo.listOrder.map(item=>(
+
+                {this.state.hospitalInfo.hspt_total.map(item=>(
                     <View>
                         <AtCard
-                            extra={`参考价:￥${item.price}`}
-                            title={item.drugName}    
+                            extra={`参考价:￥${item.drug_price}`}
+                            title={item.drug_name}    
                         >
                             <View className="f-box">
                                 <AtTag className="t-left"  circle active={true} size='small'>国产联合</AtTag>
-                                <AtButton onClick={this.nav2order(item.drugID)} className="b-right" customStyle={"width:88px"} circle size="small" type='primary'>立即预约</AtButton>
+                                <AtButton onClick={this.nav2order(item,this.state.hospitalInfo.hspt_name)} className="b-right" customStyle={"width:88px"} circle size="small" type='primary'>立即预约</AtButton>
                             </View>
                         </AtCard>
                     </View>
                 ))}
 
-                <View>
-                    <AtCard 
-                         extra='参考价:￥1330'
-                        title={this.state.hospitalInfo.listOrder[0].drugName}
-                    >
-                        <View className="f-box">
-                            <AtTag className="t-left"  circle active={true} size='small'>{this.state.hospitalInfo.listOrder[0].tags[0]}</AtTag>
-                            <AtButton className="b-right" customStyle={"width:88px"} onClick={this.nav2order} circle size="small" type='primary'>立即预约</AtButton>
-                            {/* <AtButton circle customStyle={"color:#ccc"} >暂未开始</AtButton> */}
-                        </View>
-                    </AtCard>
-                </View>
+               
                 
 
                 <AtModal isOpened={this.state.isShow}>

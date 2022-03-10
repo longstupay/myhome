@@ -15,7 +15,7 @@ interface Istate {
     pickViewVal:number[];
     hours:string[];
     min:string[];
-    time:string;
+    time:string; //选择后的时间 hours+min
 
 }
 
@@ -46,18 +46,22 @@ export default class SelectDate extends React.Component<any,Istate> {
 
     componentDidMount () {
         // 获取路由参数
-        const {id} =this.$instance.router.params// 输出 { id: 2, type: 'test' }
-        console.log(id)
+        console.log(this.$instance.router.params)
+        const {total} = this.$instance.router.params
         this.setState({
-            id:id
+            total:+total
         })
+        // const {id} =this.$instance.router.params// 输出 { id: 2, type: 'test' }
+        // console.log(id)
+        // this.setState({
+        //     id:id
+        // })
     }
 
     getDate = (item:{ value: string })=>{
         console.log(item.value)
         this.setState({
             date:item.value,
-            total:25,
             canNext:true
         })
     }
@@ -67,7 +71,9 @@ export default class SelectDate extends React.Component<any,Istate> {
     onStepChange =()=>{}
 
     nav2Time =()=>{
-        const {id,current} = this.state;
+        const {current,time,date} = this.state;
+        const {name,id,local} = this.$instance.router.params
+        console.log(time)
         if(current==0){
             this.setState({
                 isShow:true,
@@ -76,7 +82,7 @@ export default class SelectDate extends React.Component<any,Istate> {
         }
         if(current==1){
             Taro.navigateTo({
-                 url:`/subpackC/time/index?id=${id}&current=${current}`
+                 url:`/subpackC/time/index?id=${id}&current=${current}&name=${name}&local=${local}&date=${date}&time=${time}`
             })
         }
         
@@ -112,7 +118,7 @@ export default class SelectDate extends React.Component<any,Istate> {
                 <AtCalendar
                     onDayClick = {(item:{ value: string })=>this.getDate(item)}
                     isVertical
-                    validDates={ [ { value: '2022/03/04' },{ value: '2022/03/05' },{ value: '2022/03/06' },{ value: '2022/03/07' },{ value: '2022/03/08' },{ value: '2022/03/09' } ] }
+                    validDates={ [ { value: '2022/03/08' },{ value: '2022/03/09' },{ value: '2022/03/10' },{ value: '2022/03/11' },{ value: '2022/03/12' },{ value: '2022/03/13' } ] }
                 />
                 <View>
 

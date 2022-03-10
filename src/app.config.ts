@@ -26,7 +26,7 @@ export default {
     {
       "root": "subpackD",
       "pages": [
-        "edit/index"
+        "login/index"
       ]
     },
   ],

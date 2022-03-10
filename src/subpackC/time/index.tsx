@@ -6,8 +6,10 @@ import "./index.scss"
 interface Istate {
     id:number;
     current:number;
-    selectList:TimeList[];
-    
+    name:string;
+    local:string;
+    Predate:string;
+    time:string;
 }
 
 
@@ -15,7 +17,10 @@ interface Routerparams {
     id:string;
     current:string;
     $taroTimestamp:any;
-    
+    name:string;
+    local:string;
+    date:string;
+    time:string;
 }
 
 interface TimeList {
@@ -31,7 +36,10 @@ export default class selectTime extends Component<any,Istate> {
         this.state = {
             id:1,
             current:null,
-            selectList:[{uid:1,times:"08:00-09:00",total:15}]
+            name:"",
+            local:"",
+            Predate:"",
+            time:""
         }
     }
 
@@ -39,19 +47,16 @@ export default class selectTime extends Component<any,Istate> {
 
     componentDidMount () {
       // 获取路由参数
-      const {id,current} = this.$instance;
-      const list = [
-        {uid:1,times:"08:00-09:00",total:15},
-        {uid:1,times:"09:00-10:00",total:20},
-        {uid:1,times:"10:00-11:00",total:25},
-        {uid:1,times:"11:00-12:00",total:26},
-        {uid:1,times:"15:00-16:00",total:40},
-        {uid:1,times:"16:00-17:00",total:122},
-        ]
+      console.log(this.$instance)
+      const {id,current,name,date,local,time} = this.$instance;
+        
       this.setState({
             id:+id,
             current:(+current)+1,
-            selectList:list
+            name:name,
+            Predate:date,
+            local:local,
+            time:time
       })
     }
 
@@ -150,15 +155,15 @@ export default class selectTime extends Component<any,Istate> {
                             
                             <View className="info-flex ">
                                 <AtListItem className="info-head" title='预约地点' />
-                                <View className="info-text">南宁市兴宁虎邱社区卫生服务站</View>
+                                <View className="info-text">{this.state.local}</View>
                             </View>
                             <View className="info-flex ">
                                 <AtListItem className="info-head" title='预约时间' />
-                                <Text>2022-03-11 16:30</Text>
+                                <Text>{this.state.Predate} {this.state.time}</Text>
                             </View>
                             <View className="info-flex ">
                                 <AtListItem className="info-head" title='预约项目' />
-                                <Text>二价人乳头瘤病毒疫苗(大肠杆菌)</Text>
+                                <Text>{this.state.name}</Text>
                             </View>
                         
                         </AtList>

@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import { View, Text } from '@tarojs/components'
-import { AtAvatar, AtList, AtListItem } from 'taro-ui'
+import { AtAvatar, AtButton, AtList, AtListItem } from 'taro-ui'
 import Taro from '@tarojs/taro'
 import "taro-ui/dist/style/components/button.scss" // 按需引入
 import './index.scss'
@@ -8,9 +8,18 @@ import "taro-ui/dist/style/components/avatar.scss";
 import "taro-ui/dist/style/components/flex.scss";
 import "taro-ui/dist/style/components/list.scss";
 import "taro-ui/dist/style/components/icon.scss";
-export default class Index extends Component {
 
-  componentWillMount() { }
+interface Ustate {
+  isLogin:boolean
+}
+export default class Index extends Component<any,Ustate> {
+
+  constructor(props:any){
+    super(props)
+    this.state={
+      isLogin:false
+    }
+  }
 
   componentDidMount() { }
 
@@ -45,13 +54,29 @@ export default class Index extends Component {
     })
   }
 
+  nav2Login=()=>{
+    Taro.redirectTo({
+      url:"/subpackD/login/index"
+    })
+  }
+
   render() {
     return (
       <View>
-        <View className='myavatar at-row at-row__align--center'>
-          <AtAvatar className='' circle text='岐' size="large"></AtAvatar>
-          <Text className='text at-col'>不知岐黄幽魂耳</Text>
-        </View>
+       
+          {
+            this.state.isLogin?
+            <View className='at-row at-row__align--center '>
+              <AtAvatar className='myavatar' circle text='岐' size="large"></AtAvatar>
+              <Text className='text at-col'>不知岐黄幽魂耳</Text>
+            </View>:
+            <View className='login-center'>
+                <AtButton onClick={this.nav2Login}>立即登录</AtButton>
+            </View>
+          }
+          
+
+       
 
         <View>
           <AtList>
