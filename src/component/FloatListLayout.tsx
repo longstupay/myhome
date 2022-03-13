@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro'
 import React from 'react'
 import { AtFloatLayout, AtGrid } from "taro-ui"
-import { AtButton } from 'taro-ui'
+import {BASE_URL} from "../config/config"
 import { drugType } from '../home.interface'
 
 import "./component.scss"
@@ -25,9 +25,10 @@ class FloatList extends React.Component<ILayoutProps, drugState> {
         }
     }
 
-    async componentDidMount(): Promise<void> {
+    async componentDidMount() {
         const res =  await Taro.request({
-            url:'http://127.0.0.1:7001/hspt/type'
+            // url:'http://127.0.0.1:7001/hspt/type'
+            url:`${BASE_URL}hspt/type`
         })
 
         // console.log(res.data)

@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from '@tarojs/components'
 import { AtTabs, AtTabsPane } from 'taro-ui'
 
-
+import {BASE_URL} from '../config/config'
 //custom com
 import {MyList} from "./List"
 import { drugType } from '../home.interface';
@@ -32,8 +32,10 @@ class MyTabs extends React.Component<any,Istate> {
     }
 
     async componentDidMount() {
+        console.log(BASE_URL)
         const res = await Taro.request({
-            url:"http://127.0.0.1:7001/hspt/type"
+            // url:"http://127.0.0.1:7001/hspt/type"
+            url:`${BASE_URL}hspt/type`
         })
 
         // console.log(res.data)
