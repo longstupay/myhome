@@ -21,7 +21,24 @@ export default class Index extends Component<any,Ustate> {
     }
   }
 
-  componentDidMount() { }
+  componentDidMount() { 
+    try {
+      var value = Taro.getStorageSync('phone')
+      if (value) {
+        console.log(`获取成功`+value)
+        this.setState({
+          isLogin:true
+        })
+      }
+    } catch (e) {
+      // Do something when catch error
+      Taro.atMessage({
+        'message': '获取信息失败,请联系客服',
+        'type': "error",
+        })
+      throw e
+    }
+  }
 
   componentWillUnmount() { }
 
@@ -66,9 +83,8 @@ export default class Index extends Component<any,Ustate> {
        
           {
             this.state.isLogin?
-            <View className='at-row at-row__align--center '>
+            <View className='islogin'>
               <AtAvatar className='myavatar' circle text='岐' size="large"></AtAvatar>
-              <Text className='text at-col'>不知岐黄幽魂耳</Text>
             </View>:
             <View className='login-center'>
                 <AtButton onClick={this.nav2Login}>立即登录</AtButton>

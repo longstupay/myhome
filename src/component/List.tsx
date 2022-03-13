@@ -4,6 +4,7 @@ import { AtList, AtListItem } from "taro-ui"
 import Taro from '@tarojs/taro';
 import Http from "../utils/HTTP"
 import { hospitalInfo } from '../home.interface';
+import { BASE_URL } from '../config/config';
 
 
 
@@ -25,7 +26,8 @@ class MyList extends React.Component<any,any> {
                 <AtList>
 
                     <Http.Get
-                        url="http://127.0.0.1:7001/hspt"
+                        url={`${BASE_URL}`+'hspt'}
+                        // url='http://127.0.0.1:7001/hspt'
                         delay={100}
                         loading={
                             <AtListItem
