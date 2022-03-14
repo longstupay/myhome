@@ -1,20 +1,28 @@
 import React from "react";
-import { Text, Picker, View, InputProps } from '@tarojs/components'
-import { AtNavBar, AtForm, AtInput, AtButton, AtList, AtListItem } from 'taro-ui'
+import { Picker, View } from '@tarojs/components'
+import { AtNavBar, AtInput, AtButton, AtList, AtListItem,AtToast  } from 'taro-ui'
 import Taro from '@tarojs/taro'
-import {BASE_URL} from '../../config/config'
-
 import "./index.scss"
- 
+
+
+
 interface userState {
     inputvalue: string
-    selector: string[],
-    selectorChecked: string,
+    selector: string[]
+    selectorChecked: string
     dateSel: string
     idcar: string
     phone: string
     selectorSex: string[]
     selectorSexChecked: string
+    isSaveErr:boolean
+    isNotLogin:boolean
+    loginPhone:string
+    token:string
+    islose:boolean
+    isRegister:boolean
+    user_uid:number
+    isSuccess:boolean
 }
 
 export default class User extends React.Component<any, userState> {
@@ -29,9 +37,18 @@ export default class User extends React.Component<any, userState> {
             dateSel: '2018-04-22',
             idcar: "",
             phone: "",
-            selectorSexChecked: "男"
+            selectorSexChecked: "男",
+            isSaveErr:false,
+            isNotLogin:false,
+            loginPhone:null,
+            token:'',
+            islose:false,
+            isRegister:false,
+            user_uid:null,
+            isSuccess:false
         }
     }
+
 
     handleClick = () => {
         Taro.navigateBack({
@@ -56,37 +73,163 @@ export default class User extends React.Component<any, userState> {
         this.setState({
             phone:e
         })
-    }   
-    submitInfo=()=>{
+    }
+
+    //查询是否登录，并根据登录凭证查询用户信息 并展示用户信息
+    async componentDidMount() {
+        //查询缓存的手机号
+        try {
+            var value = Taro.getStorageSync('phone')
+            if (value) {
+                this.setState({
+                    token:value
+                },async()=>{
+                    //根据token向服务端身份验证
+                    console.log(this.state.token)
+                    const res = await Taro.request({
+                        url: "http://127.0.0.1:7001/passport/jwt",
+                        method: "POST",
+                        header: {
+                            Authorization: 'Bearer ' + this.state.token
+                        }
+                    })
+                    console.log(res)
+                    if (res.statusCode >= 400) {
+                        this.setState({
+                            isNotLogin: true
+                        })
+                        let t = setTimeout(() => {
+                            Taro.switchTab({
+                                url: '/pages/index/index'
+                            })
+                        }, 2000);
+
+                    }
+                    console.log(res.data.phone)
+                    //根据登录手机查询信息
+                    this.setState({
+                            isNotLogin:false,
+                            loginPhone:""+res.data.phone
+                        })
+                    const info = await Taro.request({
+                        url:"http://127.0.0.1:7001/user/phone/"+res.data.phone
+                    })
+                    if(info.statusCode>=400){
+                        // this.setState({
+                        //     islose:true
+                        // })
+                        return
+                    }
+                    console.log(info)
+                    const {birthday,id_card,idtype,loginphone,phone_number,sex,username,user_uid} = info.data
+
+                    this.setState({
+                        inputvalue:username,
+                        selectorChecked:idtype,
+                        dateSel:birthday,
+                        idcar:id_card,
+                        phone:phone_number,
+                        selectorSexChecked:sex,
+                        loginPhone:loginphone,
+                        isRegister:true,
+                        user_uid
+                    })
+                })
+            }else{
+                console.log('未登录');
+                this.setState({
+                    isNotLogin: true
+                })
+                let t = setTimeout(() => {
+                    Taro.switchTab({
+                        url: '/pages/index/index'
+                    })
+                }, 2000);
+            }
+          } catch (e) {
+            // Do something when catch error
+            throw e
+          }
+        
+
+        // console.log(res.data.phone)
+        // //通过认证则查询数据库
+        // const info = await Taro.request({
+        //     url:``
+        // })
+
+    }
+
+    submitInfo= async()=>{
         const { 
             inputvalue,
             selectorChecked,
             dateSel,
             idcar,
             phone,
-            selectorSexChecked, } = this.state
-
-        console.log( inputvalue,
-            selectorChecked,
-            dateSel,
-            idcar,
-            phone,
-            selectorSexChecked)
-        // Taro.request({
-        //     url:`${BASE_URL}user`,
-        //     method:"POST",
-        //     data: {
-        //         "username": inputvalue,
-        //         "id_card": idcar,
-        //         "phone_number": phone,
-        //         "sex": selectorSexChecked,
-        //         "idtype":selectorChecked,   //证件类型
-        //         "birthday":dateSel       //生日
-        //     },
-        //     header: {
-        //         'content-type': 'application/json' // 默认值
-        //     },
-        // })
+            selectorSexChecked,
+            loginPhone,
+            isRegister     
+        } = this.state;
+        console.log(isRegister)
+        if(isRegister){
+            //注册过信息，则为提交更新
+            const {user_uid} =this.state
+            const patchInfo = await Taro.request({
+                url:"http://127.0.0.1:7001/user/"+user_uid,
+                method:"PUT",
+                data:{
+                    "username": inputvalue,
+                    "id_card": idcar,
+                    "phone_number": phone,
+                    "sex": selectorSexChecked,
+                    "idtype":selectorChecked,   //证件类型
+                    "birthday":dateSel,       //生日
+                    "loginphone":loginPhone
+                }
+            })
+            if(patchInfo.statusCode <=299){
+                this.setState({
+                    isSuccess:true
+                })
+                let t =setTimeout(()=>{
+                    Taro.switchTab({
+                        url: '/pages/index/index'
+                    })
+                },1100)
+                
+            }
+        }else{
+            const res = await Taro.request({
+                // url:`${BASE_URL}user`,
+                url:"http://127.0.0.1:7001/user",
+                method:"POST",
+                data: {
+                    "username": inputvalue,
+                    "id_card": idcar,
+                    "phone_number": phone,
+                    "sex": selectorSexChecked,
+                    "idtype":selectorChecked,   //证件类型
+                    "birthday":dateSel,       //生日
+                    "loginphone":loginPhone
+                },
+                header: {
+                    'content-type': 'application/json' 
+                },
+            })
+            
+            if(res.statusCode<299){
+                Taro.switchTab({
+                    url: '/pages/index/index'
+                })
+            }else{
+                this.setState({
+                    isSaveErr:!this.state.isSaveErr
+                })
+            }
+           
+        }
+       
 
     }
 
@@ -112,6 +255,12 @@ export default class User extends React.Component<any, userState> {
         return (
            
             <View>
+                {/* 错误提示 */}
+                <AtToast isOpened={this.state.isSaveErr} status="error" text="保存失败" icon="{icon}"></AtToast>
+                 {/* 登录提示 */}
+                 <AtToast isOpened={this.state.isNotLogin} status="error" text="请先登录" icon="{icon}"></AtToast>
+                 <AtToast isOpened={this.state.islose} status="error" text="请认真填写用户信息" icon="{icon}"></AtToast>
+                 <AtToast isOpened={this.state.isSuccess} status="success" text="提交成功" icon="{icon}"></AtToast>
                 <AtNavBar
                     onClickLeftIcon={this.handleClick}
                     color='#000'
