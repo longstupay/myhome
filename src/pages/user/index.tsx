@@ -1,9 +1,11 @@
 import React from "react";
-import { Text, Picker, View } from '@tarojs/components'
+import { Text, Picker, View, InputProps } from '@tarojs/components'
 import { AtNavBar, AtForm, AtInput, AtButton, AtList, AtListItem } from 'taro-ui'
 import Taro from '@tarojs/taro'
+import {BASE_URL} from '../../config/config'
 
 import "./index.scss"
+ 
 interface userState {
     inputvalue: string
     selector: string[],
@@ -36,14 +38,56 @@ export default class User extends React.Component<any, userState> {
            
         })
     }
+    
+  
 
-    handleChange(value) {
-        this.setState({
-
-        })
+    handleIdChange=(e)=>{
+      this.setState({
+          idcar:e
+      })
     }
-    onSubmit(event) {
-        console.log(this.state.inputvalue)
+
+    handleNameChange=(e)=> {
+       this.setState({
+           inputvalue:e
+       })
+    }
+    handlePhoneChange=(e)=>{
+        this.setState({
+            phone:e
+        })
+    }   
+    submitInfo=()=>{
+        const { 
+            inputvalue,
+            selectorChecked,
+            dateSel,
+            idcar,
+            phone,
+            selectorSexChecked, } = this.state
+
+        console.log( inputvalue,
+            selectorChecked,
+            dateSel,
+            idcar,
+            phone,
+            selectorSexChecked)
+        // Taro.request({
+        //     url:`${BASE_URL}user`,
+        //     method:"POST",
+        //     data: {
+        //         "username": inputvalue,
+        //         "id_card": idcar,
+        //         "phone_number": phone,
+        //         "sex": selectorSexChecked,
+        //         "idtype":selectorChecked,   //证件类型
+        //         "birthday":dateSel       //生日
+        //     },
+        //     header: {
+        //         'content-type': 'application/json' // 默认值
+        //     },
+        // })
+
     }
 
     onChange = e => {
@@ -62,12 +106,11 @@ export default class User extends React.Component<any, userState> {
             selectorSexChecked: this.state.selectorSex[e.detail.value]
         })
     }
-
+ 
     render(): React.ReactNode {
-
-
+        console.log(`render@${this.state.idcar}`)
         return (
-
+           
             <View>
                 <AtNavBar
                     onClickLeftIcon={this.handleClick}
@@ -77,9 +120,6 @@ export default class User extends React.Component<any, userState> {
 
                 />
 
-                <AtForm
-                    onSubmit={this.onSubmit.bind(this)}
-                >
                     <AtInput
                         required={true}
                         name='value'
@@ -87,7 +127,7 @@ export default class User extends React.Component<any, userState> {
                         type='text'
                         placeholder='请输入姓名'
                         value={this.state.inputvalue}
-                        onChange={this.handleChange.bind(this, 'value')}
+                        onChange={this.handleNameChange}
                     />
 
                     <AtInput
@@ -98,7 +138,7 @@ export default class User extends React.Component<any, userState> {
                         type='phone'
                         placeholder='手机号码'
                         value={this.state.phone}
-                        onChange={this.handleChange.bind(this)}
+                        onChange={this.handlePhoneChange}
                     />
                     <View className='container'>
                         <View className='page-body'>
@@ -132,7 +172,7 @@ export default class User extends React.Component<any, userState> {
                                         type='idcard'
                                         placeholder='请输入证件号码'
                                         value={this.state.idcar}
-                                        onChange={this.handleChange.bind(this)}
+                                        onChange={this.handleIdChange}
                                     />
                                 </View>
                             </View>
@@ -149,8 +189,8 @@ export default class User extends React.Component<any, userState> {
                         </View>
                     </View>
 
-                    <AtButton className="btn-form" type='primary' circle formType='submit'>提交</AtButton>
-                </AtForm>
+                    <AtButton className="btn-form" type='primary' circle onClick={this.submitInfo}>提交</AtButton>
+ 
             </View>
 
 

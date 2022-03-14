@@ -1,8 +1,10 @@
 import { View,Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React, { ReactNode } from "react";
-import { AtButton, AtInput,AtActivityIndicator } from "taro-ui";
+import { AtButton, AtInput,AtActivityIndicator,AtMessage  } from "taro-ui";
 import './index.scss'
+// import {BASE_URL} from '../../config/config'
+
 
 interface IState {
     value:string;
@@ -10,6 +12,8 @@ interface IState {
     isSend:boolean;
     height:string;
     isNav2Idenx:boolean;
+    notPhone:boolean;
+    isActiveBtn:boolean;
 }
 export default class Login extends React.Component<any, IState>{
 
@@ -21,26 +25,63 @@ export default class Login extends React.Component<any, IState>{
             isSend:false,
             height:"",
             isNav2Idenx:false,
+            notPhone:true,
+            isActiveBtn:false
         }
     }
 
  
     handlePhoneChange(e) {
-        if(e.length<12){
-            this.setState({
-                value:e
-            })
-        }
-        
+        this.setState({
+            value: e,
+        })
     }
     handleCodeChange(e){
         this.setState({
-            value1:e
+            value1:e,
+            isActiveBtn:true
         })
     }
-    toLogin=()=>{
+    toLogin = async ()=>{
+        //value 电话，value1 验证码
         const {value,value1} = this.state
         console.log(value,value1);
+        const res = await Taro.request({
+            // url: `${BASE_URL}sms/getcode`, 
+            url:"http://127.0.0.1:7001/sms/getcode",
+            method:"POST",
+            data: {
+              phone:`${value}`,
+              value:value1
+            }
+          })
+        console.log(res)
+        
+        if(res.statusCode>=400){
+            Taro.atMessage({
+                'message': '验证码错误',
+                'type': "error",
+              })
+            return 
+        }
+        //存jwt的token到本地
+        const jwt = await Taro.request({
+            // url:`${BASE_URL}jwt/${value}`,
+            url:`http://127.0.0.1:7001/jwt/${value}`,
+            method:"POST"
+        })
+        console.log(jwt.data.t)
+        if(jwt.statusCode==200){
+            try {
+                Taro.setStorageSync('phone', `${jwt.data.t}`)
+              } catch (e) {
+                    Taro.atMessage({
+                    'message': '未知错误请联系客服',
+                    'type': "error",
+                    })
+                  throw e
+               }
+        }
         this.setState({
             isNav2Idenx:true
         },()=>{
@@ -52,10 +93,34 @@ export default class Login extends React.Component<any, IState>{
         })
        
     }
-    sendCode=()=>{
+    sendCode = async()=>{
+        const {value} = this.state
+        if(value.length!==11){
+            Taro.atMessage({
+                'message': '输入正确手机号',
+                'type': "error",
+              })
+            return 
+        }
         this.setState({
             isSend:true
         })
+        
+        const res = await Taro.request({
+            // url: `${BASE_URL}sms/`, 
+            url:"http://127.0.0.1:7001/sms",
+            data: {
+             phone:`${value}`
+            },
+            method:"POST",
+            header: {
+              'content-type': 'application/json' // 默认值
+            },
+            success: function (res) {
+              console.log(res.data)
+            }
+          })
+        console.log(res)
         setTimeout(()=>{
             this.setState({
                 isSend:false
@@ -82,6 +147,7 @@ export default class Login extends React.Component<any, IState>{
     render(): ReactNode {
         return (
             <View>
+                <AtMessage />
                 {
                     this.state.isNav2Idenx ? 
                         <View className="loading" style={{
@@ -117,8 +183,11 @@ export default class Login extends React.Component<any, IState>{
                                     }
 
                                 </View>
-
-                                <AtButton onClick={this.toLogin}>登录</AtButton>
+                                {
+                                    this.state.isActiveBtn?<AtButton className="l-btn" onClick={this.toLogin}>登录</AtButton>:
+                                    <AtButton className="l-btn" disabled={true} >登录</AtButton>
+                                }
+                                
                             </View>
                             <View className="b-text"> <Text >登录有疑问,联系客服</Text></View>
 
