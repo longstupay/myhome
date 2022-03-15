@@ -72,7 +72,7 @@ export default class SelectDate extends React.Component<any,Istate> {
 
     nav2Time =()=>{
         const {current,time,date} = this.state;
-        const {name,id,local} = this.$instance.router.params
+        const {name,drug_id,local} = this.$instance.router.params
         console.log(time)
         if(current==0){
             this.setState({
@@ -82,7 +82,7 @@ export default class SelectDate extends React.Component<any,Istate> {
         }
         if(current==1){
             Taro.navigateTo({
-                 url:`/subpackC/time/index?id=${id}&current=${current}&name=${name}&local=${local}&date=${date}&time=${time}`
+                 url:`/subpackC/time/index?drug_id=${drug_id}&current=${current}&name=${name}&local=${local}&date=${date}&time=${time}`
             })
         }
         

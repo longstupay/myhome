@@ -23,6 +23,7 @@ interface userState {
     isRegister:boolean
     user_uid:number
     isSuccess:boolean
+    isUpdate:boolean
 }
 
 export default class User extends React.Component<any, userState> {
@@ -45,10 +46,12 @@ export default class User extends React.Component<any, userState> {
             islose:false,
             isRegister:false,
             user_uid:null,
-            isSuccess:false
+            isSuccess:false,
+            isUpdate:false
         }
     }
 
+    $instance = Taro.getCurrentInstance().router.params
 
     handleClick = () => {
         Taro.navigateBack({
@@ -77,6 +80,10 @@ export default class User extends React.Component<any, userState> {
 
     //查询是否登录，并根据登录凭证查询用户信息 并展示用户信息
     async componentDidMount() {
+        console.log(this.$instance.update)
+        this.setState({
+            isUpdate:true
+        })
         //查询缓存的手机号
         try {
             var value = Taro.getStorageSync('phone')
@@ -150,13 +157,6 @@ export default class User extends React.Component<any, userState> {
             // Do something when catch error
             throw e
           }
-        
-
-        // console.log(res.data.phone)
-        // //通过认证则查询数据库
-        // const info = await Taro.request({
-        //     url:``
-        // })
 
     }
 
@@ -189,15 +189,21 @@ export default class User extends React.Component<any, userState> {
                 }
             })
             if(patchInfo.statusCode <=299){
-                this.setState({
-                    isSuccess:true
-                })
-                let t =setTimeout(()=>{
-                    Taro.switchTab({
-                        url: '/pages/index/index'
+                if(!this.state.isUpdate){
+                    this.setState({
+                        isSuccess:true
                     })
-                },1100)
-                
+                    let t =setTimeout(()=>{
+                        Taro.switchTab({
+                            url: '/pages/index/index'
+                        })
+                    },1100)
+                }else{
+                    this.setState({
+                        isSuccess:true
+                    })
+                }
+
             }
         }else{
             const res = await Taro.request({
@@ -219,9 +225,11 @@ export default class User extends React.Component<any, userState> {
             })
             
             if(res.statusCode<299){
-                Taro.switchTab({
-                    url: '/pages/index/index'
-                })
+                if(!this.state.isUpdate){
+                    Taro.switchTab({
+                        url: '/pages/index/index'
+                    })
+                }
             }else{
                 this.setState({
                     isSaveErr:!this.state.isSaveErr

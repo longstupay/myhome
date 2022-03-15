@@ -1,20 +1,39 @@
 import { View ,Text, Button } from "@tarojs/components";
-import Taro from "@tarojs/taro";
+import Taro, { eventCenter } from "@tarojs/taro";
 import React, { Component } from "react";
-import { AtButton, AtSteps,AtNoticebar,AtCard ,AtList, AtListItem, AtForm} from 'taro-ui'
+import { AtButton, AtSteps,AtNoticebar,AtCard ,AtList, AtListItem, AtForm, AtToast} from 'taro-ui'
+import {getUserInfo} from "../../module"
+
 import "./index.scss"
 interface Istate {
-    id:number;
+    drug_id:number;
     current:number;
     name:string;
-    local:string;
-    Predate:string;
+    local:string;   //预约地点
+    Predate:string; //预约时间
     time:string;
+    username:string; 
+    birthday:string;
+    phone_number:string;
+    sex:string;
+    user_uid:number;
+    isNullInfo:boolean
 }
 
+type UserInfo = {
+    birthday:string, //生日
+    id_card:string,  //证件类型
+    idtype:string,
+    loginphone:string,
+    phone_number:string,
+    sex:string,
+    user_uid:number,
+    username:string,
+    
+}
 
 interface Routerparams {
-    id:string;
+    drug_id:string;
     current:string;
     $taroTimestamp:any;
     name:string;
@@ -34,30 +53,100 @@ export default class selectTime extends Component<any,Istate> {
     constructor(props:any) {
         super(props)
         this.state = {
-            id:1,
+            drug_id:1,
             current:null,
             name:"",
             local:"",
             Predate:"",
-            time:""
+            time:"",
+            username:'',
+            birthday:'',
+            phone_number:'',
+            sex:'',
+            user_uid:null,
+            isNullInfo:false
         }
     }
 
     $instance:Routerparams = Taro.getCurrentInstance().router.params as unknown as Routerparams
 
-    componentDidMount () {
+    $pageinstance = Taro.getCurrentInstance()
+
+    componentWillMount () {
+        const onShowEventId = this.$pageinstance.router.onShow
+        // 监听
+        eventCenter.on(onShowEventId, this.onShow)
+    }
+
+    componentWillUnmount () {
+        const onShowEventId = this.$pageinstance.router.onShow
+        // 卸载
+        eventCenter.off(onShowEventId, this.onShow)
+    }
+
+     onShow = async () => {
+        console.log('onShow--页面显示')
+        const info = await getUserInfo()
+      console.log(info)
+      if(info.code){
+        this.setState({
+            isNullInfo: true
+        })
+        let t = setTimeout(() => {
+            Taro.switchTab({
+                url: '/pages/user/index'
+            })
+        }, 2000);
+      }else{
+          info as UserInfo
+          const { username, birthday, phone_number, sex, user_uid } = info
+          //获取用户信息
+          this.setState({
+              username,
+              birthday,
+              phone_number,
+              sex,
+              user_uid
+          })
+      }
+    }
+
+
+    async componentDidMount () {
       // 获取路由参数
       console.log(this.$instance)
-      const {id,current,name,date,local,time} = this.$instance;
-        
-      this.setState({
-            id:+id,
-            current:(+current)+1,
-            name:name,
-            Predate:date,
-            local:local,
-            time:time
-      })
+      const {drug_id,current,name,date,local,time} = this.$instance;
+      const info = await getUserInfo()
+      console.log(info)
+      if(info.code){
+        this.setState({
+            isNullInfo: true
+        })
+        let t = setTimeout(() => {
+            Taro.switchTab({
+                url: '/pages/user/index'
+            })
+        }, 2000);
+      }else{
+          info as UserInfo
+          const { username, birthday, phone_number, sex, user_uid } = info
+          //获取用户信息
+          this.setState({
+            drug_id: +drug_id,
+              current: (+current) + 1,
+              name: name,//预约项目
+              Predate: date,
+              local: local,
+              time: time,
+              username,
+              birthday,
+              phone_number,
+              sex,
+              user_uid
+
+          })
+      }
+      
     }
 
     onChange(){
@@ -76,13 +165,13 @@ export default class selectTime extends Component<any,Istate> {
     }
 
     infoConfirm= ()=>{
-
+        console.log(this.state)
     }
 
     nav2edit = ()=>{
-        const {id} = this.state
+        const {user_uid} = this.state
         Taro.navigateTo({
-            url:`/pages/user/index?${id}&update=true`,
+            url:`/pages/user/index?${user_uid}&update=true`,
         })
     }
     
@@ -101,6 +190,7 @@ export default class selectTime extends Component<any,Istate> {
           ]
         return (
             <View>
+                <AtToast isOpened={this.state.isNullInfo} status="error" text="请先修改填写用户信息" icon="{icon}"></AtToast>
                 <AtNoticebar close icon='volume-plus'>
                 温馨提示：您提交后可以去(我的-预约信息)查看是否预约成功
                 </AtNoticebar>
@@ -128,19 +218,19 @@ export default class selectTime extends Component<any,Istate> {
                             <View onClick={this.nav2edit} className="no-flex">修改</View>
                             <View className="info-flex ">
                                 <AtListItem className="info-head" title='姓名' />
-                                <View className="info-text">王昭君</View>
+                                <View className="info-text">{this.state.username}</View>
                             </View>
                             <View className="info-flex ">
                                 <AtListItem className="info-head" title='生日' />
-                                <Text>1998-12-07</Text>
+                                <Text>{this.state.birthday}</Text>
                             </View>
                             <View className="info-flex ">
                                 <AtListItem className="info-head" title='手机号码' />
-                                <Text>15676197507</Text>
+                                <Text>{this.state.phone_number}</Text>
                             </View>
                             <View className="info-flex ">
                                 <AtListItem className="info-head" title='性别' />
-                                <Text>男</Text>
+                                <Text>{this.state.sex}</Text>
                             </View>
                         
                         </AtList>
@@ -173,17 +263,6 @@ export default class selectTime extends Component<any,Istate> {
                 
                 <AtButton circle customStyle={"margin-top:16px;width:68%"} type="primary" onClick={this.infoConfirm}>确定预约</AtButton>
          
-
-                {/* <AtFloatLayout isOpened title="预约场次：" onClose={this.handleClose.bind(this)}>
-                    
-                    {this.state.selectList.map((items,index)=>(
-                        <View key={index} className="at-row myflex">
-                            <View>{items.times}(可预约:)<Text className="text">{items.total}</Text>剂</View>
-                            <AtButton  onClick={this.selectTime.bind(this,items)} className="btn" size="small" type="primary">预约</AtButton>
-                        </View>
-                    ))}
-                </AtFloatLayout> */}
-              
                 
             </View>
             

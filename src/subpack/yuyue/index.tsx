@@ -94,7 +94,7 @@ export default class OrderList extends Component<any, ModelHeadState> {
         const {drug_name,drug_id,drug_total} = item;
         return ()=>{
             Taro.navigateTo({
-                url: `/subpackB/date/index?name=${drug_name}&id=${drug_id}&total=${drug_total}&local=${local}`,
+                url: `/subpackB/date/index?name=${drug_name}&drug_id=${drug_id}&total=${drug_total}&local=${local}`,
             })
         }
     }
