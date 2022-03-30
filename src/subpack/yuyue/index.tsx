@@ -20,7 +20,7 @@ interface InfoHospital {
     hspt_notice: string;
     hspt_location: string;
     hspt_desc: string;
-    hspt_total?:ListOrder[];
+    hspt_total:ListOrder[];
 
 }
 
@@ -32,11 +32,9 @@ interface ListOrder {
     drug_type: string;
     drug_time: number;
     drug_total: number;
+    hsptId:number
 }
 
-interface drugTag {
-
-}
 
 export default class OrderList extends Component<any, ModelHeadState> {
     constructor(porps: any) {
@@ -54,25 +52,34 @@ export default class OrderList extends Component<any, ModelHeadState> {
                 hspt_desc:'描述描述',
                 hspt_total:[
                     {
-                        drug_id: 1,
-                        drug_name: '狂犬1',
-                        drug_tag: ['国产', '进口'],
-                        drug_price: '1800',
-                        drug_type: '狂犬',
-                        drug_time: 3,
-                        drug_total:200,
+                        "drug_id": 1,
+                        "drug_name": "乙肝(CHO)",
+                        "drug_tag": [
+                            "国产",
+                            "进口"
+                        ],
+                        "drug_price": "1800",
+                        "drug_type": "乙肝",
+                        "drug_time": 3,
+                        "drug_total": 200,
+                        "hsptId": 1
                     },
                     {
-                        drug_id: 2,
-                        drug_name: '新冠1',
-                        drug_tag: ['印度'],
-                        drug_price: '10',
-                        drug_type: '新冠',
-                        drug_time: 2,
-                        drug_total:500,
+                        "drug_id": 4,
+                        "drug_name": "四价人乳头瘤病毒疫苗",
+                        "drug_tag": [
+                            "国产",
+                            "进口"
+                        ],
+                        "drug_price": "1800",
+                        "drug_type": "九价",
+                        "drug_time": 2,
+                        "drug_total": 100,
+                        "hsptId": 1
                     }
                 ]
             }
+            
         }
     }
 
@@ -131,6 +138,7 @@ export default class OrderList extends Component<any, ModelHeadState> {
                 <AtDivider>
                     <AtIcon value='chevron-up'></AtIcon>
                 </AtDivider>
+                
 
 
                 {this.state.hospitalInfo.hspt_total.map(item=>(

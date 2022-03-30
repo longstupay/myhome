@@ -77,6 +77,12 @@ export default class Index extends Component<any,Ustate> {
     })
   }
 
+  nav2Order=()=>{
+    Taro.redirectTo({
+      url:"/subpack/order/index"
+    })
+  }
+
   render() {
     return (
       <View>
@@ -109,6 +115,7 @@ export default class Index extends Component<any,Ustate> {
               title='预约信息'
               arrow='right'
               thumb='https://web-1306059885.cos.ap-guangzhou.myqcloud.com/pic/pic-1.png'
+              onClick={this.nav2Order}
             />
             <AtListItem
               className='h-item'

@@ -8,7 +8,9 @@ export default {
     {
       "root": "subpack",
       "pages": [
-        "yuyue/index"
+        "yuyue/index",
+        "order/index",
+        "des/index"
       ]
     },
     {

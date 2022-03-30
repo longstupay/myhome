@@ -6,13 +6,13 @@ import {BASE_URL} from '../config/config'
 //custom com
 import {MyList} from "./List"
 import { drugType } from '../home.interface';
-import HTTP from '../utils/HTTP';
 import Taro from '@tarojs/taro';
 
 
 interface Istate {
     current:number;
-    drugtype:drugType[]
+    drugtype:drugType[],
+    select_id:number
 }
 
 class MyTabs extends React.Component<any,Istate> {
@@ -21,11 +21,20 @@ class MyTabs extends React.Component<any,Istate> {
         super(props)
         this.state = {
             current:0,
-            drugtype:[]
+            drugtype:[],
+            select_id:0
         }
     }
 
     handleClick = (index:number)=>{
+        // console.log('tab的索引',index);
+        if(index>0){
+            console.log('选中分类id',this.state.drugtype[index-1].id)
+            this.setState({
+                select_id:this.state.drugtype[index-1].id
+            })
+        }
+        
         this.setState({
             current:index
         })
@@ -37,8 +46,6 @@ class MyTabs extends React.Component<any,Istate> {
             // url:"http://127.0.0.1:7001/hspt/type"
             url:`${BASE_URL}hspt/type`
         })
-
-        // console.log(res.data)
         this.setState({
             drugtype:res.data
         })
@@ -68,7 +75,7 @@ class MyTabs extends React.Component<any,Istate> {
                     {
                         this.state.drugtype.map((item,index)=>(
                             <AtTabsPane key={item.id} current={this.state.current} index={index+1}>
-                                <MyList/>
+                                <MyList />
                             </AtTabsPane>
                         ))
                     }

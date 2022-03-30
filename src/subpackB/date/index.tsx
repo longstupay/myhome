@@ -26,7 +26,7 @@ export default class SelectDate extends React.Component<any,Istate> {
         super(props)
          
         const hours = ['08','09','10','11','15','16','17','18']
-        const min = ['00','30']
+        const min = ['45','30','15','00']
 
         this.state = {
             id:'',

@@ -164,8 +164,34 @@ export default class selectTime extends Component<any,Istate> {
         console.log(item)
     }
 
-    infoConfirm= ()=>{
+    infoConfirm= async()=>{
         console.log(this.state)
+        const {Predate,birthday,drug_id,local,name,phone_number,sex,time,user_uid,username} =this.state
+        try {
+            const order =  await Taro.request({
+                url:"http://127.0.0.1:7001/order",
+                method:"POST",
+                data:{
+                    "username": username,
+                    "birthday": birthday,
+                    "order_phone": phone_number,
+                    "sex": sex,
+                    "drug_id": drug_id,
+                    "Drug_name": name,
+                    "Booking_place": local,
+                    "booking_time": Predate+" "+time,
+                    "userId": user_uid
+                }
+            })
+            if(order.statusCode<=299){
+                console.log('跳转到订单页')
+                Taro.reLaunch({
+                    url: '/subpack/order/index'
+                })
+            }
+        } catch (error) {
+            throw error
+        }
     }
 
     nav2edit = ()=>{

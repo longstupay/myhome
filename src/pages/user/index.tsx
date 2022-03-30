@@ -81,9 +81,14 @@ export default class User extends React.Component<any, userState> {
     //查询是否登录，并根据登录凭证查询用户信息 并展示用户信息
     async componentDidMount() {
         console.log(this.$instance.update)
-        this.setState({
-            isUpdate:true
-        })
+        if(this.$instance.update){
+            this.setState({
+                isUpdate:true
+            },()=>{
+                console.log('是否从订单更新用户信息',this.state.isUpdate)
+            })
+        }
+        
         //查询缓存的手机号
         try {
             var value = Taro.getStorageSync('phone')
@@ -171,7 +176,7 @@ export default class User extends React.Component<any, userState> {
             loginPhone,
             isRegister     
         } = this.state;
-        console.log(isRegister)
+        console.log('是否注册',isRegister)
         if(isRegister){
             //注册过信息，则为提交更新
             const {user_uid} =this.state
@@ -206,6 +211,7 @@ export default class User extends React.Component<any, userState> {
 
             }
         }else{
+            console.log('未注册过')
             const res = await Taro.request({
                 // url:`${BASE_URL}user`,
                 url:"http://127.0.0.1:7001/user",
@@ -225,6 +231,7 @@ export default class User extends React.Component<any, userState> {
             })
             
             if(res.statusCode<299){
+                console.log('注册成功',res.statusCode)
                 if(!this.state.isUpdate){
                     Taro.switchTab({
                         url: '/pages/index/index'
