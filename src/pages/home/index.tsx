@@ -3,14 +3,16 @@ import React from "react";
 import { AtSearchBar, AtNoticebar,AtIcon } from "taro-ui";
 import "./index.scss"
 //组件
-import {MyTabs} from '../../component/Tabs'
-import {FloatList} from '../../component/FloatListLayout'
+import MyTabs from '../../component/Tabs'
+import FloatList from '../../component/FloatListLayout'
 
 interface Hstate {
     homeScrollHeight:string
     searchVal:string
     tabList:tablist[]
     isOpen:boolean
+    layoutSelect:string
+    isSeach:boolean
 }
 
 interface tablist {
@@ -26,7 +28,9 @@ export default class Home extends React.Component<any, Hstate>{
             homeScrollHeight:'1720',
             searchVal:'',
             tabList:[],
-            isOpen:false
+            isOpen:false,
+            layoutSelect:'',
+            isSeach:false
         }
     }
 
@@ -36,16 +40,23 @@ export default class Home extends React.Component<any, Hstate>{
 
     //点击时
     onActionClick = ()=>{
-        console.log('click-')
+        console.log('click-',this.state.searchVal)
         this.setState({
-            searchVal:''
-        }
-        )
-            
+            isSeach:true
+        })
     }
     //改变时搜索  
     onChange=(val:string)=>{
-        console.log(val)
+       this.setState({
+           searchVal:val,
+       })
+       setTimeout(()=>{
+        this.setState((state)=>{
+            return {
+                isSeach:!state.isSeach
+            }
+        })
+       },600)
     }
 
     showLayout = ()=>{
@@ -58,6 +69,13 @@ export default class Home extends React.Component<any, Hstate>{
 
     componentDidMount(): void {
     
+    }
+    setOption=(option:{value:string,toOpen:boolean})=>{
+        const {value,toOpen} =option;
+        this.setState({
+            isOpen:toOpen,
+            layoutSelect:value
+        })
     }
 
     render(): React.ReactNode {
@@ -124,9 +142,9 @@ export default class Home extends React.Component<any, Hstate>{
                         <View className="at-col at-col-2 cl12"><AtIcon onClick={this.showLayout} value='bullet-list' size='30' color='#ccc'></AtIcon></View>
                     </View>
 
-                    <MyTabs />
+                    <MyTabs isSeach={{seach:this.state.isSeach,value:this.state.searchVal}} selectValue={this.state.layoutSelect} />
                     
-                    <FloatList defaultProps={this.state.isOpen} />
+                    <FloatList setOption={this.setOption} defaultProps={this.state.isOpen} />
                   
                 </ScrollView>
 

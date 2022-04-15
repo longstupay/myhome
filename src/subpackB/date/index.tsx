@@ -118,7 +118,7 @@ export default class SelectDate extends React.Component<any,Istate> {
                 <AtCalendar
                     onDayClick = {(item:{ value: string })=>this.getDate(item)}
                     isVertical
-                    validDates={ [ { value: '2022/03/08' },{ value: '2022/03/09' },{ value: '2022/03/10' },{ value: '2022/03/11' },{ value: '2022/03/12' },{ value: '2022/03/13' } ] }
+                    validDates={ [ { value: '2022/04/05' },{ value: '2022/04/06' },{ value: '2022/04/07' },{ value: '2022/04/08' },{ value: '2022/04/09' },{ value: '2022/04/10' } ] }
                 />
                 <View>
 
