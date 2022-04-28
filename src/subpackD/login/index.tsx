@@ -74,6 +74,7 @@ export default class Login extends React.Component<any, IState>{
         if(jwt.statusCode==200){
             try {
                 Taro.setStorageSync('phone', `${jwt.data.t}`)
+                Taro.setStorageSync('loginphone', `${value}`)
               } catch (e) {
                     Taro.atMessage({
                     'message': '未知错误请联系客服',

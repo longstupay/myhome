@@ -117,7 +117,7 @@ export default class User extends React.Component<any, userState> {
                         }, 2000);
 
                     }
-                    console.log(res.data.phone)
+                    console.log('缓存中的信息',res.data.phone)
                     //根据登录手机查询信息
                     this.setState({
                             isNotLogin:false,
@@ -130,7 +130,7 @@ export default class User extends React.Component<any, userState> {
                         // this.setState({
                         //     islose:true
                         // })
-                        return
+                        console.log('未填写信息')
                     }
                     console.log(info)
                     const {birthday,id_card,idtype,loginphone,phone_number,sex,username,user_uid} = info.data
@@ -193,6 +193,7 @@ export default class User extends React.Component<any, userState> {
                     "loginphone":loginPhone
                 }
             })
+            console.log('错误--',patchInfo.statusCode)
             if(patchInfo.statusCode <=299){
                 if(!this.state.isUpdate){
                     this.setState({
@@ -204,11 +205,46 @@ export default class User extends React.Component<any, userState> {
                         })
                     },1100)
                 }else{
+                    console.log('----????---')
                     this.setState({
                         isSuccess:true
                     })
                 }
 
+            }
+            // 未填写信息的bug,逻辑待优化
+            if(patchInfo.statusCode>=400){
+                const lgnum = Taro.getStorageSync('loginphone')
+                console.log('登录手机号',lgnum)
+           
+                const res = await Taro.request({
+                    // url:`${BASE_URL}user`,
+                    url:"http://127.0.0.1:7001/user",
+                    method:"POST",
+                    data: {
+                        "username": inputvalue,
+                        "id_card": idcar,
+                        "phone_number": phone,
+                        "sex": selectorSexChecked,
+                        "idtype":selectorChecked,   //证件类型
+                        "birthday":dateSel,       //生日
+                        "loginphone":lgnum
+                    },
+                    header: {
+                        'content-type': 'application/json' 
+                    },
+                })
+
+                if(res.statusCode<299){
+                    console.log('注册成功',res.statusCode)
+                    if(!this.state.isUpdate){
+                        Taro.switchTab({
+                            url: '/pages/index/index'
+                        })
+                    }
+                }else{
+                    
+                }
             }
         }else{
             console.log('未注册过')

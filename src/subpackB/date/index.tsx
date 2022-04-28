@@ -16,6 +16,7 @@ interface Istate {
     hours:string[];
     min:string[];
     time:string; //选择后的时间 hours+min
+    serverTime:string[]; //从服务器获取的销售时间
 
 }
 
@@ -38,13 +39,14 @@ export default class SelectDate extends React.Component<any,Istate> {
             hours,
             min,
             pickViewVal:[1,1],
-            time:""
+            time:"",
+            serverTime:[]
         }
     }
 
     $instance = Taro.getCurrentInstance()
 
-    componentDidMount () {
+    async componentDidMount () {
         // 获取路由参数
         console.log(this.$instance.router.params)
         const {total} = this.$instance.router.params
@@ -56,6 +58,24 @@ export default class SelectDate extends React.Component<any,Istate> {
         // this.setState({
         //     id:id
         // })
+        
+        //获取列表数据
+        try {
+            const time =  await Taro.request({
+                url:"http://127.0.0.1:7001/time",
+                method:"GET"
+            })
+            if(time.statusCode<=299){
+            //    console.log(time.data.time)
+                this.setState({
+                    serverTime:time.data.time
+                },()=>{
+                    console.log(this.state.serverTime)
+                })
+            }
+        } catch (error) {
+            throw error
+        }
     }
 
     getDate = (item:{ value: string })=>{
@@ -111,14 +131,21 @@ export default class SelectDate extends React.Component<any,Istate> {
             { 'title': '步骤二', 'desc': '选择接种场次' },
             { 'title': '步骤三', 'desc': '填写预约信息' }
           ]
-      
+        const {serverTime} = this.state;
+        const timeObj = serverTime.map((item)=>{
+            return {
+                value:item
+            }
+        })
+        console.log(timeObj)
+        const data =timeObj || [ { value: '2022/04/30' } ]
         return (
             
             <View>
                 <AtCalendar
                     onDayClick = {(item:{ value: string })=>this.getDate(item)}
                     isVertical
-                    validDates={ [ { value: '2022/04/05' },{ value: '2022/04/06' },{ value: '2022/04/07' },{ value: '2022/04/08' },{ value: '2022/04/09' },{ value: '2022/04/10' } ] }
+                    validDates={data}
                 />
                 <View>
 
@@ -131,14 +158,14 @@ export default class SelectDate extends React.Component<any,Istate> {
 
                 <AtCard
                     note='当前选择日期'
-                    title={this.state.total?`当前可预约${this.state.total}`:""}
+                    title={this.state.total?`当前可预约${this.state.total}`:"药品已售罄"}
                     thumb='http://www.logoquan.com/upload/list/20180421/logoquan15259400209.PNG'
                 >
                     <Text>{this.state.date?this.state.date:'请先选择日期'}
                     &nbsp;&nbsp;&nbsp;
                             {this.state.time?this.state.time:""}</Text>
                 </AtCard>
-                {this.state.canNext?
+                {this.state.canNext && this.state.total?
                 <AtButton onClick={this.nav2Time} customStyle={"margin-top:25px;width:78%;"} type="primary">下一步</AtButton>:
                 <AtButton customStyle={"margin-top:25px;width:78%;"} disabled type='secondary'>下一步</AtButton>
                 }
